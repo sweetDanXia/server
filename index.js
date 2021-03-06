@@ -5,6 +5,8 @@ const app = express()
 
 app.use(require('cors')())
 app.use(express.json())
+// 表示uploads路径下面的东西都是静态文件，用express.static()静态托管，同时加上__dirname，/uploads，使得静态文件可以通过/uploads来访问
+app.use('/uploads', express.static(__dirname + '/uploads'))
 
 require('./plugins/db')(app)
 require('./routes/admin')(app)

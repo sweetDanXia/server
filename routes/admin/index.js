@@ -41,4 +41,17 @@ module.exports = app => {
         req.Model = require(`../../models/${modelName}`)
         next()
     }, router)
+
+    // express本身获取不到上传文件的数据，需要中间件multer专门用来处理上传数据
+    const multer = require('multer')
+    // 定义上传中间件upload
+    const upload = multer({ dest: __dirname + '/../../uploads' })
+    // upload.single('file') 表示接收单个文件，而且接收file字段，也就是前端请求接口传过来的file字段
+    app.post('/admin/api/upload', upload.single('file'), async (req, res) => {
+        // 本身在req里面是没有file的，因为用了upload  multer中间件，将上传文件的数据就赋值到req上了，所以一定要加upload，才会有req.flie
+        const file = req.file
+        // 拼接url返回给前端
+        file.url = `http://localhost:3000/uploads/${file.filename}`
+        res.send(file)
+    })
 }
